@@ -1,7 +1,9 @@
-cans.pip-config
-===============
+cans.pip-configure
+==================
 
-[![Build Status](https://travis-ci.org/cans/pip-config.svg?branch=master)](https://travis-ci.org/cans/pip-config)
+[![Build Status](https://travis-ci.org/cans/pip-configure.svg?branch=master)](https://travis-ci.org/cans/pip-configure)
+[![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-cans.pip--configure-blue.svg?style=flat-square)](https://galaxy.ansible.com/cans/pip-configure)
+[![License](https://img.shields.io/badge/license-GPLv2-brightgreen.svg?style=flat-square)](LICENSE)
 
 Ansible Role to setup pip to access private package indices and other
 Python package sources
@@ -19,25 +21,49 @@ Role Variables
 
 This role variables are namespaced using the `pip_config_` prefix.
 
-- `pip_config_dir`: the directory in which install pip's configuration
-  file (default: `~/.pip/`);
-- `pip_config_extra_index_urls`: the list of extra PyPI index you want
-  pip to look for packages from (default: `[]`).
-- `pip_config_file`: the name to give to pip configuration file
+
+### Default variables
+
+- `pipconfig_dir`: the directory in which install pip's configuration
+  file. Make sure it is in a safe place, see comment on `pip_config_dir`
+  item below. (default: `~/.pip/`);
+- `pipconfig_dir_mode`: the mode to set on the `pip_config_dir`
+  directory. This it will contain a file that points you to different
+  network locations, you should make to not leave yourself open to
+  some misdirecting you by replacing its content with malicious one.
+  Only you and the root usr should be able to write in it or any of its
+  parents (defaults: 0500);
+- `pipconfig_file`: the name to give to pip configuration file
   (default: `pip.conf`);
-- `pip_config_find_links_urls`: the list of extra web resources pip
-  should scan for links to Python packages (default: `[]`);
-- `pip_config_timeout`: the duration in seconds pip will wait for any
+- `pipconfig_file_mode`: the mode to set on the `pip_config_file` file.
+  Be mindful that you may need to put credentials in it. Tightening the
+  permission is recommanded (default: 0400);
+- `pipconfig_timeout`: the duration in seconds pip will wait for any
   package index to respond before droping the connexion and try with
   the next (default: 10).
 
-You most likely do not need to modify the value of the `pip_config_dir`
-and `pip_config_file` variables. But since pip supports many locations
-for its configuration, these allow you to do it if you fancy it.
+You most likely do not need to modify the value of the `pip_config_file`
+variables. Same goes for `pip_config_file`, but since pip supports many
+locations for its configuration, these allow you to do it if you fancy
+it. One such case is if you want to have different pip configurations
+for different Python [virtual environement](https://docs.python.org/3/library/venv.html).
 
-The `pip_config_timeout` variable you may want to adjust depending on
-where are stored the packages you need. The lower the value, the less
+The `pipconfig_timeout` variable you may want to adjust depending on
+where are stored the packages you need. The lower the value, the lesser
 you wait, but the higher the risk of unexpected failures.
+
+
+### Input variables
+
+This are the variables you need to set for the role to actuall do
+something, useful:
+
+- `pipconfig_extra_index_urls`: the list of extra PyPI index you want
+  pip to look for packages from (default: `[]`).
+- `pipconfig_find_links_urls`: the list of extra web resources pip
+  should scan for links to Python packages (default: `[]`);
+
+You can define either or both of them.
 
 
 Dependencies
@@ -55,7 +81,7 @@ Example Playbook
           - https://my-pypi.domain.com/simple
         pip_config_find_links_urls:
           - https://my.domain.com/packages.html
-           
+
       roles:
          - { role: "cans.pip-config" }
 
@@ -79,4 +105,4 @@ along with cans.package-sources. If not, see <http://www.gnu.org/licenses/>.
 Author Information
 ------------------
 
-Copyright © 2017, Nicolas CANIART
+Copyright © 2017-2018, Nicolas CANIART

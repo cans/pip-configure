@@ -1,6 +1,9 @@
 ---
 - name: Install PIP config
   template:
+    dest: "{{ pipconfig_dir + '/' + pipconfig_file }}"
+    mode: "{{ pipconfig_file_mode }}"
     src: "pip.conf"
-    dest: "{{ pip_config_dir + '/' + pip_config_file }}"
-    mode: 0400
+
+
+# vim: et:sw=2:syntax=yaml:ts=2:
