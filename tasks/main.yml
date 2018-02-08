@@ -1,9 +1,21 @@
 ---
+- name: Ensure PIP config directory exist and can be written in.
+  file:
+    dest: "{{ pipconfig_dir | expanduser }}"
+    mode: "0700"
+    state: directory
+
 - name: Install PIP config
   template:
-    dest: "{{ pipconfig_dir + '/' + pipconfig_file }}"
+    dest: "{{ pipconfig_dir | expanduser + '/' + pipconfig_file }}"
     mode: "{{ pipconfig_file_mode }}"
     src: "pip.conf"
+
+- name: Ensure PIP's configuration directory has proper permissions.
+  file:
+    dest: "{{ pipconfig_dir | expanduser }}"
+    mode: "{{ pipconfig_dir_mode }}"
+    state: directory
 
 
 # vim: et:sw=2:syntax=yaml:ts=2:
