@@ -1,6 +1,12 @@
 ---
+- name: Ensure that PIP config directory exists
+  file:
+    path: "{{ pip_config_dir }}"
+    state: "directory"
+    recurse: "yes"
+
 - name: Install PIP config
   template:
     src: "pip.conf"
     dest: "{{ pip_config_dir + '/' + pip_config_file }}"
-    mode: 0400
+    mode: "{{ pip_config_mode }}"

@@ -21,8 +21,10 @@ This role variables are namespaced using the `pip_config_` prefix.
 
 - `pip_config_dir`: the directory in which install pip's configuration
   file (default: `~/.pip/`);
-- `pip_config_extra_index_urls`: the list of extra PyPI index you want
-  pip to look for packages from (default: `[]`).
+- `pip_config_index_url`: the main PyPI index you want pip to look for
+  packages in (default: not defined);
+- `pip_config_extra_index_urls`: the list of extra PyPI indexes you want
+  pip to look for packages in (default: `[]`);
 - `pip_config_file`: the name to give to pip configuration file
   (default: `pip.conf`);
 - `pip_config_find_links_urls`: the list of extra web resources pip
@@ -39,6 +41,12 @@ The `pip_config_timeout` variable you may want to adjust depending on
 where are stored the packages you need. The lower the value, the less
 you wait, but the higher the risk of unexpected failures.
 
+If you want to add one or more PyPI indexes for pip to search in
+addition to the default one, specify them as a list value for
+`pip_config_extra_index_urls`.  If you want to override the default
+PyPI index entirely, specify your own main index as a string value for
+`pip_config_index_url`.  You can use both variables if you want pip
+to ignore the default index *and* search multiple other PyPI indexes.
 
 Dependencies
 ------------

@@ -1,6 +1,8 @@
 ---
 pip_config_dir: "~/.pip"
+pip_config_index_url: ""
 pip_config_extra_index_urls: []
 pip_config_file: "pip.conf"
+pip_config_mode: 0400
 pip_config_find_links_urls: []
 pip_config_timeout: 10
