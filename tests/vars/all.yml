@@ -1,0 +1,9 @@
+insecure_base_dir: "{{ lookup('env', 'HOME') }}/test"
+# Secure because $HOME should be owned by root and writeable only by
+# its owner (mode & ~0755 should be equal to 0)
+secure_base_dir: "{{ lookup('env', 'HOME') }}"
+secure_umask: 0755
+links:
+  - 'https://s3.amazonaws.com/pypi.datadoghq.com/trace/index.html'
+extras:
+  - 'https://pipy.example.com/simple'
