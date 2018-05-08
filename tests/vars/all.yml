@@ -1,4 +1,4 @@
-insecure_base_dir: "{{ lookup('env', 'HOME') }}/test"
+insecure_base_dir: "/tmp/test"
 # Secure because $HOME should be owned by root and writeable only by
 # its owner (mode & ~0755 should be equal to 0)
 secure_base_dir: "{{ lookup('env', 'HOME') }}"

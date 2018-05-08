@@ -1,11 +1,82 @@
 ---
 - hosts: servers
+  name: "Check defaults behave as expected."
   connection: local
+  gather_facts: false
+  vars_files:
+    - vars/all.yml
+  pre_tasks:
+    - name: "Ensure {{pipconfig_dir}} does not exist yet"
+      stat:
+        path: "{{ pipconfig_dir }}"
+      register: config_dir_check
+      failed_when: 'config_dir_check.stat.exists'
+
+    - name: "Set find link urls patterns"
+      set_fact:
+        link_patterns: "{{link_patterns|default([]) + [{'line': '        ' + item, 'pattern': '\\s{8}' + item}] }}"
+      with_items:
+         - "{{ links }}"
+    - name: "Set extra index urls patterns"
+      set_fact:
+        extra_patterns: "{{extra_patterns|default([]) + [{'line': '        ' + item, 'pattern': '\\s{8}' + item}] }}"
+      with_items:
+         - "{{ extras }}"
+
+  roles:
+    - role: "pip-configure"
+      pipconfig_find_links_urls: "{{ links }}"
+      pipconfig_extra_index_urls: "{{ extras }}"
+
+  tasks:
+    - name: "Get file stats"
+      stat:
+        path: "{{pipconfig_dir}}/{{ pipconfig_file }}"
+      register: config_file_check
+      failed_when: 'config_file_check is not success'
+
+    - name: "Get dir stats"
+      stat:
+        path: "{{ pipconfig_dir}}"
+      register: config_dir_check
+      failed_when: 'config_dir_check is not success or config_dir_check.stat.mode != pipconfig_dir_mode'
+
+    - name: "Assert '{{pipconfig_file}}' contains find-url and url."
+      lineinfile:
+        path: "{{pipconfig_dir}}/{{ pipconfig_file }}"
+        line: "{{item.line}}"
+        regexp: "{{ item.pattern |default(item.line) }}"
+        state: present
+      with_items: "{{ [{'line': 'find-links =' }] + link_patterns }}"
+      register: findurl_lines_in_file_check
+      failed_when: "findurl_lines_in_file_check.changed"
+
+    - name: "Assert '{{pipconfig_file}}' contains extra-index-url and url."
+      lineinfile:
+        path: "{{ pipconfig_dir }}/{{ pipconfig_file }}"
+        line: "{{ item.line }}"
+        regexp: "{{ item.pattern |default(item.line) }}"
+        state: present
+      with_items: "{{ [{'line': 'extra-index-url =' }] + extra_patterns }}"
+      register: findurl_lines_in_file_check
+      failed_when: "findurl_lines_in_file_check.changed"
+
+
+- hosts: servers
+  name: "Ensure pipconfig_dir override is effective."
+  connection: local
+  gather_facts: false
   vars_files:
     - vars/all.yml
   vars:
-    pipconfig_dir: "{{ secure_base_dir }}/.pip"
+    pipconfig_dir: "{{ insecure_base_dir }}/.pip"
   pre_tasks:
+    - name: "Ensure {{pipconfig_dir}} does not exist yet"
+      stat:
+        path: "{{ pipconfig_dir }}"
+      register: config_dir_check
+      failed_when: 'config_dir_check.stat.exists'
+
     - name: "Create base directory"
       file:
         path: "{{ insecure_base_dir }}"
