@@ -27,6 +27,20 @@ Fixed:
 
 * Fixed
 
+Version v1.1.0 -- 2018-05-08
+----------------------------
+
+Added:
+~~~~~~
+
+* Ability to override default index url. (from @stephenjolly)
+
+Fixed:
+~~~~~~
+
+* Improper use of expand user (closes #5)
+* Incorrect tags in role meta-data (closes #3)
+
 
 Version v1.0.0 -- 2018-04-07
 ----------------------------

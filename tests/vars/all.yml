@@ -7,3 +7,4 @@ links:
   - 'https://s3.amazonaws.com/pypi.datadoghq.com/trace/index.html'
 extras:
   - 'https://pipy.example.com/simple'
+alt_index: "https://pypi.example.com/simple"

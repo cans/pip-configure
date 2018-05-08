@@ -5,4 +5,6 @@ pipconfig_extra_index_urls: []
 pipconfig_file: "pip.conf"
 pipconfig_file_mode: '0400'
 pipconfig_find_links_urls: []
+pipconfig_index_url: ""
 pipconfig_timeout: 10
+
