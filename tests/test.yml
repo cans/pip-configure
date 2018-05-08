@@ -41,6 +41,14 @@
       register: config_dir_check
       failed_when: 'config_dir_check is not success or config_dir_check.stat.mode != pipconfig_dir_mode'
 
+    - name: "Assert '{{pipconfig_file}}' does not contain index-url and url."
+      lineinfile:
+        path: "{{pipconfig_dir}}/{{ pipconfig_file }}"
+        line: "index-url = {{alt_index}}"
+        state: absent
+      register: findurl_lines_in_file_check
+      failed_when: "findurl_lines_in_file_check.changed"
+
     - name: "Assert '{{pipconfig_file}}' contains find-url and url."
       lineinfile:
         path: "{{pipconfig_dir}}/{{ pipconfig_file }}"
@@ -63,7 +71,7 @@
 
 
 - hosts: servers
-  name: "Ensure pipconfig_dir override is effective."
+  name: "Ensure overrides are effective."
   connection: local
   gather_facts: false
   vars_files:
@@ -95,6 +103,7 @@
 
   roles:
     - role: "pip-configure"
+      pipconfig_index_url: "{{ alt_index }}"
       pipconfig_find_links_urls: "{{ links }}"
       pipconfig_extra_index_urls: "{{ extras }}"
 
@@ -111,13 +120,21 @@
       register: config_dir_check
       failed_when: 'config_dir_check is not success or config_dir_check.stat.mode != pipconfig_dir_mode'
 
-    - name: "Assert '{{pipconfig_file}}' contains find-url and url."
+    - name: "Assert '{{pipconfig_file}}' contains index-url and url."
       lineinfile:
         path: "{{pipconfig_dir}}/{{ pipconfig_file }}"
-        line: "{{item.line}}"
+        line: "index-url = {{alt_index}}"
+        state: present
+      register: findurl_lines_in_file_check
+      failed_when: "findurl_lines_in_file_check.changed"
+
+    - name: "Assert '{{pipconfig_file}}' contains extra-index-url and url."
+      lineinfile:
+        path: "{{ pipconfig_dir }}/{{ pipconfig_file }}"
+        line: "{{ item.line }}"
         regexp: "{{ item.pattern |default(item.line) }}"
         state: present
-      with_items: "{{ [{'line': 'find-links =' }] + link_patterns }}"
+      with_items: "{{ [{'line': 'extra-index-url =' }] + extra_patterns }}"
       register: findurl_lines_in_file_check
       failed_when: "findurl_lines_in_file_check.changed"
 
