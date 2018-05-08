@@ -18,7 +18,8 @@ galaxy_info:
 
   galaxy_tags:
     - 'pip'
-    - 'pip.conf'
+    - 'configuration'
+    - 'pypi'
     - 'python'
 
 dependencies: []
